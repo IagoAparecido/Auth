@@ -1,6 +1,5 @@
 // @ts-check
 import eslint from '@eslint/js';
-import eslintPluginPrettierRecommended from 'eslint-plugin-prettier/recommended';
 import globals from 'globals';
 import tseslint from 'typescript-eslint';
 
@@ -10,7 +9,6 @@ export default tseslint.config(
   },
   eslint.configs.recommended,
   ...tseslint.configs.recommendedTypeChecked,
-  eslintPluginPrettierRecommended,
   {
     languageOptions: {
       globals: {
@@ -20,6 +18,7 @@ export default tseslint.config(
       ecmaVersion: 5,
       sourceType: 'module',
       parserOptions: {
+        project: './tsconfig.json',
         projectService: true,
         tsconfigRootDir: import.meta.dirname,
       },
@@ -27,9 +26,20 @@ export default tseslint.config(
   },
   {
     rules: {
-      '@typescript-eslint/no-explicit-any': 'off',
-      '@typescript-eslint/no-floating-promises': 'warn',
-      '@typescript-eslint/no-unsafe-argument': 'warn'
+      // Regras gerais
+      'no-console': 'warn', // Alerta para usos de console.log
+      '@typescript-eslint/no-unused-vars': 'error', // Aviso para variáveis não usadas
+
+      // Regras TypeScript
+      '@typescript-eslint/no-explicit-any': 'warn', // Alerta para o uso de "any"
+      '@typescript-eslint/no-floating-promises': 'error', // Garante que promises sejam tratadas
+      '@typescript-eslint/no-unsafe-argument': 'warn', // Alerta para argumentos inseguros
+      '@typescript-eslint/explicit-module-boundary-types': 'off', // Não força o tipo em funções exportadas
+      '@typescript-eslint/no-empty-function': 'error', // Evita funções vazias
+
+      // Outros ajustes
+      'no-shadow': 'off', // Evita conflitos com @typescript-eslint
+      '@typescript-eslint/no-shadow': 'error', // Reforça a regra para variáveis sombreadas
     },
   },
 );
