@@ -10,6 +10,10 @@
     "cm": "git add . && npm run git:all &&  cz",
     "git:all": "git diff --cached --name-status --diff-filter=ACDMRTUXB*",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
+    "migration:run": "npm run typeorm migration:run -- -d ./src/config/typeorm.ts",
+    "migration:generate": "npm run typeorm -- -d ./src/config/typeorm.ts migration:generate",
+    "migration:create": "npm run typeorm -- -d ./src/config/typeorm.ts migration:create",
+    "migration:revert": "npm run typeorm -- -d ./src/config/typeorm.ts migration:revert",
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
@@ -20,7 +24,8 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prepare": "husky"
+    "prepare": "husky",
+    "typeorm": "ts-node ./node_modules/typeorm/cli"
   },
   "lint-staged": {
     "*.{js,ts,tsx}": [
@@ -30,8 +35,13 @@
   "dependencies": {
     "@gitmoji/parser-opts": "^1.4.0",
     "@nestjs/common": "^11.0.1",
+    "@nestjs/config": "^4.0.0",
     "@nestjs/core": "^11.0.1",
     "@nestjs/platform-express": "^11.0.1",
+    "@nestjs/swagger": "^11.0.2",
+    "@nestjs/typeorm": "^11.0.0",
+    "dotenv": "^16.4.7",
+    "pg": "^8.13.1",
     "reflect-metadata": "^0.2.2",
     "rxjs": "^7.8.1"
   },
@@ -47,6 +57,7 @@
     "@types/jest": "^29.5.14",
     "@types/node": "^22.10.7",
     "@types/supertest": "^6.0.2",
+    "@typescript-eslint/eslint-plugin": "^8.21.0",
     "commitizen": "^4.3.1",
     "commitlint": "^19.6.1",
     "cz-gitmoji-adapter": "^2.0.0",
@@ -65,6 +76,7 @@
     "ts-loader": "^9.5.2",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
+    "typeorm": "^0.3.20",
     "typescript": "^5.7.3",
     "typescript-eslint": "^8.20.0"
   },
