@@ -28,7 +28,7 @@ export default tseslint.config(
     rules: {
       // Regras gerais
       'no-console': 'warn', // Alerta para usos de console.log
-      '@typescript-eslint/no-unused-vars': 'off', // Aviso para variáveis não usadas
+      '@typescript-eslint/no-unused-vars': 'warn', // Aviso para variáveis não usadas
       '@typescript-eslint/require-await': 'off', // Não exige async em funções assíncronas,
       '@typescript-eslint/no-unsafe-return': 'off', // Desabilita retornos inseguros
       '@typescript-eslint/no-unsafe-member-access': 'off', // Desabilita acesso inseguro

@@ -33,6 +33,7 @@
     ]
   },
   "dependencies": {
+    "@casl/ability": "^6.7.3",
     "@gitmoji/parser-opts": "^1.4.0",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.0",
