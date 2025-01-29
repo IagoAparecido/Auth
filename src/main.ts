@@ -1,8 +1,9 @@
 import { NestFactory } from '@nestjs/core';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import { AppModule } from './modules/app/app.module';
-import { jwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
+import { JwtAuthGuard } from './modules/auth/guards/jwt-auth.guard';
 import { ValidationPipe } from '@nestjs/common';
+import { PoliciesGuard } from './modules/authorization/providers/guards/policies.guard';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -16,8 +17,9 @@ async function bootstrap() {
 
   app.useGlobalPipes(new ValidationPipe());
 
-  const jwtGuard = app.get<jwtAuthGuard>(jwtAuthGuard);
-  app.useGlobalGuards(jwtGuard);
+  const jwtGuard = app.get<JwtAuthGuard>(JwtAuthGuard);
+  const policiesGuard = app.get<PoliciesGuard>(PoliciesGuard);
+  app.useGlobalGuards(jwtGuard, policiesGuard);
 
   await app.listen(process.env.PORT ?? 3000);
 }

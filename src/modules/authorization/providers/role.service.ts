@@ -2,7 +2,6 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Role } from 'src/models/authorization/role.entity';
 import { In, Repository } from 'typeorm';
-// import { CheckAbilities } from '../decorators/abilities.decorator';
 import { Permission } from 'src/models/authorization/permission.entity';
 import { CreateRoleRequestDto } from '../models/dto/create-role-request.dto';
 import { EditRelationRequestDto } from 'src/shared/dto/edit-relation-request.dto.ts';

@@ -32,6 +32,12 @@ export class PermissionService {
     });
   }
 
+  public async findByRoleId(id: string): Promise<Permission[]> {
+    return await this.permissionRepository.find({
+      where: { roles: { id: id } },
+    });
+  }
+
   public async findByUserId(id: string): Promise<Permission[]> {
     const user = await this.userRepository.findOne({
       where: {

@@ -19,7 +19,7 @@ export class Permission extends baseEntity<Permission> {
   inverted: boolean;
 
   @Column({ type: 'json', nullable: true })
-  conditions?: unknown;
+  conditions?: any;
 
   @Column({ nullable: true })
   reason?: string;

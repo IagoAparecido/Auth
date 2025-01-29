@@ -7,10 +7,11 @@ import { PermissionService } from './providers/permission.service';
 import { PermissionController } from './controllers/permission.controller';
 import { RolesController } from './controllers/roles.controller';
 import { User } from 'src/models/user/user.entity';
+import { PoliciesGuard } from './providers/guards/policies.guard';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Role, Permission, User])],
-  providers: [RoleService, PermissionService],
+  providers: [RoleService, PermissionService, PoliciesGuard],
   controllers: [RolesController, PermissionController],
 })
 export class AuthorizationModule {}
