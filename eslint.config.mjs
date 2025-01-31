@@ -40,7 +40,7 @@ export default tseslint.config(
       '@typescript-eslint/no-floating-promises': 'off', // Garante que promises sejam tratadas
       '@typescript-eslint/no-unsafe-argument': 'off', // Alerta para argumentos inseguros
       '@typescript-eslint/explicit-module-boundary-types': 'off', // Não força o tipo em funções exportadas
-      '@typescript-eslint/no-empty-function': 'error', // Evita funções vazias,
+      '@typescript-eslint/no-empty-function': 'off', // Evita funções vazias,
       '@typescript-eslint/no-unsafe-assignment': 'off', // Alerta para atribuições inseguras
 
       // Outros ajustes

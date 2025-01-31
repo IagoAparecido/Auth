@@ -65,12 +65,9 @@ export class PoliciesGuard implements CanActivate {
         CHECK_POLICIES_KEY,
         context.getHandler(),
       ) || [];
-    console.log('rules', rules);
 
     const currentUser: any = context.switchToHttp().getRequest().user;
-    console.log('currentUser', currentUser);
     const request: Request = context.switchToHttp().getRequest();
-    // console.log('request', request);
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),
       context.getClass(),
@@ -82,13 +79,11 @@ export class PoliciesGuard implements CanActivate {
     const userPermissions = await this.permissionService.findByRoleId(
       currentUser.roleId,
     );
-    console.log('userPermissions', userPermissions);
 
     const parsedUserPermission = this.parseConditions(
       userPermissions,
       currentUser,
     );
-    console.log('parsedUserPermission', parsedUserPermission);
 
     try {
       const ability = this.createAbility(Object(parsedUserPermission));
