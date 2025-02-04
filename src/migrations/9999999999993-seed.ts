@@ -13,6 +13,7 @@ export class Seed99999999999993 implements MigrationInterface {
     await queryRunner.manager.save(User, [
       {
         username: 'admin',
+        name: 'Admin',
         password:
           '$2a$12$K0x6lxzNRhCZ8VDcOLtEpe0Vmky8SudoJT6aOrNHZI4og4MNKN05O',
         roleId: role!.id,

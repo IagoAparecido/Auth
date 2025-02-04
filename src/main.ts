@@ -21,6 +21,6 @@ async function bootstrap() {
   const policiesGuard = app.get<PoliciesGuard>(PoliciesGuard);
   app.useGlobalGuards(jwtGuard, policiesGuard);
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.PORT ?? 3010);
 }
 bootstrap();

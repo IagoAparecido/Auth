@@ -9,6 +9,7 @@ import { UserModule } from '../user/user.module';
 import { LocalAuthGuard } from './guards/local-auth.guard';
 import jwt from 'src/config/jwt';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
+import { RmqModule } from '@modules/rmq/rmq.module';
 
 @Module({
   imports: [
@@ -18,6 +19,7 @@ import { JwtAuthGuard } from './guards/jwt-auth.guard';
       useFactory: async (configService) => configService.get('jwt'),
     }),
     UserModule,
+    RmqModule,
   ],
   providers: [
     AuthService,

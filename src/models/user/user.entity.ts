@@ -35,8 +35,6 @@ export class User extends baseEntity<User> {
 
   @ManyToOne(() => RegisterCode, (code) => code.user)
   code: RegisterCode;
-  @Column()
-  codeId: string;
 
   @Column({
     type: 'enum',
@@ -45,7 +43,7 @@ export class User extends baseEntity<User> {
   })
   application: USER_TYPE;
 
-  @Column()
+  @Column({ default: false })
   verified: boolean;
 
   @Column()
