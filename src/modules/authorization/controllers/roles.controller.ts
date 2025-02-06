@@ -25,6 +25,9 @@ import { CreateRoleRequestDto } from '../models/dto/create-role-request.dto';
 import { UpdateRoleRequestDto } from '../models/dto/update-role-request.dto';
 import { EditRelationRequestDto } from 'src/shared/dto/edit-relation-request.dto.ts';
 import { RoleService } from '../providers/role.service';
+import { PaginatedDto } from '@shared/dto/paginated.dto';
+import { ApiOkResponsePaginated } from '@shared/decorator/api-ok-response-paginated.decorator';
+import { CheckPolicies } from '../decorators/policies.decorator';
 
 @ApiBearerAuth()
 @ApiTags('Roles')
@@ -35,14 +38,12 @@ import { RoleService } from '../providers/role.service';
 export class RolesController {
   constructor(private readonly roleService: RoleService) {}
 
+  @CheckPolicies({ action: 'manage', subject: 'all' })
   @Get()
   @ApiOperation({
     summary: 'Get all roles',
   })
-  @ApiOkResponse({
-    description: 'List of roles',
-    type: [RoleResponseDto],
-  })
+  @ApiOkResponsePaginated(RoleResponseDto, 'List of roles')
   @ApiQuery({
     name: 'page',
     required: false,
@@ -60,9 +61,11 @@ export class RolesController {
     limit = Number(limit) || Number(process.env.PAGINATION_LIMIT);
     page = page ? (page - 1) * limit : 0;
 
-    return await this.roleService.findAll(page, limit);
+    const [roles, total] = await this.roleService.findAll(page, limit);
+    return new PaginatedDto(roles, total);
   }
 
+  @CheckPolicies({ action: 'manage', subject: 'all' })
   @Get(':id')
   @ApiOperation({
     summary: 'Get a role by id',
@@ -77,6 +80,7 @@ export class RolesController {
     return await this.roleService.findOne(id);
   }
 
+  @CheckPolicies({ action: 'manage', subject: 'all' })
   @Post()
   @ApiOperation({
     summary: 'Create a new role',
@@ -89,6 +93,7 @@ export class RolesController {
     return await this.roleService.create(data);
   }
 
+  @CheckPolicies({ action: 'manage', subject: 'all' })
   @Delete(':id')
   @ApiOperation({
     summary: 'Delete a role',
@@ -100,6 +105,7 @@ export class RolesController {
     return this.roleService.delete(id);
   }
 
+  @CheckPolicies({ action: 'manage', subject: 'all' })
   @Patch(':id')
   @ApiOperation({
     summary: 'Update a role',
@@ -116,6 +122,7 @@ export class RolesController {
     return this.roleService.update(id, data);
   }
 
+  @CheckPolicies({ action: 'manage', subject: 'all' })
   @Post(':roleId/permissions')
   @HttpCode(201)
   @ApiOperation({
@@ -136,6 +143,7 @@ export class RolesController {
     return await this.roleService.addPermission(roleId, data);
   }
 
+  @CheckPolicies({ action: 'manage', subject: 'all' })
   @Delete(':roleId/permissions')
   @HttpCode(201)
   @ApiOperation({

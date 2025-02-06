@@ -1,4 +1,6 @@
 import {
+  BadRequestException,
+  ConflictException,
   Inject,
   Injectable,
   NotFoundException,
@@ -12,12 +14,18 @@ import { CreateUserRequestDto } from '../../user/models/dto/create-user-request.
 import { queueKeys } from '@shared/contants/queue';
 import { ClientProxy } from '@nestjs/microservices';
 import { USER_TYPE } from '@models/user/user-types';
+import { RegisterCodeRequestDto } from '../models/dto/register-code-request.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { RegisterCode } from '@models/registerCode/register-code.entity';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UserService,
-    private jwtService: JwtService,
+    @InjectRepository(RegisterCode)
+    private codeRepository: Repository<RegisterCode>,
+    private readonly usersService: UserService,
+    private readonly jwtService: JwtService,
     @Inject(queueKeys.QUEUE_NAME)
     private readonly client: ClientProxy,
   ) {}
@@ -35,6 +43,9 @@ export class AuthService {
     const user = await this.usersService.findOne(username, application);
     if (!user) {
       throw new NotFoundException('User not found');
+    }
+    if (user.verified === false) {
+      throw new NotFoundException('User not verified');
     }
 
     const isMatch = await bcrypt.compare(pass, user.password);
@@ -66,5 +77,36 @@ export class AuthService {
         name: user.name,
       })
       .toPromise();
+  }
+
+  public async verifyCode(data: RegisterCodeRequestDto) {
+    try {
+      const codeValue = data.code;
+      const registerCode = await this.codeRepository.findOne({
+        where: { value: codeValue },
+        relations: {
+          user: true,
+        },
+      });
+      if (!registerCode) throw new ConflictException('Ivalid code');
+
+      const currentDate = new Date();
+      if (currentDate > registerCode.expirationDate)
+        throw new ConflictException('Code expired');
+
+      if (
+        registerCode.user.username === data.value &&
+        registerCode.user.application === data.application
+      ) {
+        return await this.usersService.updateVerified(
+          registerCode.user.id,
+          true,
+        );
+      } else {
+        throw new ConflictException('Invalid code');
+      }
+    } catch (error) {
+      throw new BadRequestException(error);
+    }
   }
 }

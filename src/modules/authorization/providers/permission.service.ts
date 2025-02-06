@@ -83,7 +83,7 @@ export class PermissionService {
     return await this.permissionRepository.save(permission);
   }
 
-  public async delete(id: string): Promise<void> {
+  public async delete(id: string) {
     const permission = await this.permissionRepository.findOne({
       where: { id: id },
     });
@@ -93,10 +93,7 @@ export class PermissionService {
     await this.permissionRepository.softRemove(permission);
   }
 
-  public async update(
-    id: string,
-    data: UpdatePermissionRequestDto,
-  ): Promise<void> {
+  public async update(id: string, data: UpdatePermissionRequestDto) {
     const permission = await this.permissionRepository.findOne({
       where: {
         id: id,

@@ -10,9 +10,12 @@ import { LocalAuthGuard } from './guards/local-auth.guard';
 import jwt from 'src/config/jwt';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RmqModule } from '@modules/rmq/rmq.module';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { RegisterCode } from '@models/registerCode/register-code.entity';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([RegisterCode]),
     ConfigModule.forFeature(jwt),
     JwtModule.registerAsync({
       inject: [ConfigService],

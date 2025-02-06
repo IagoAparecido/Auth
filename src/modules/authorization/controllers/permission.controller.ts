@@ -27,6 +27,8 @@ import { EditRelationRequestDto } from 'src/shared/dto/edit-relation-request.dto
 import { PermissionService } from '../providers/permission.service';
 import { PaginatedDto } from 'src/shared/dto/paginated.dto';
 import { Public } from 'src/shared/decorator/is-public.decorator';
+import { ApiOkResponsePaginated } from '@shared/decorator/api-ok-response-paginated.decorator';
+import { CheckPolicies } from '../decorators/policies.decorator';
 
 @ApiBearerAuth()
 @ApiTags('Permissions')
@@ -37,15 +39,12 @@ import { Public } from 'src/shared/decorator/is-public.decorator';
 export class PermissionController {
   constructor(private readonly permissionService: PermissionService) {}
 
-  @Public()
+  @CheckPolicies({ action: 'manage', subject: 'all' })
   @Get()
   @ApiOperation({
     summary: 'Get all permissions',
   })
-  @ApiOkResponse({
-    description: 'List of permission',
-    type: [PermissionResponseDto],
-  })
+  @ApiOkResponsePaginated(PermissionResponseDto, 'List of permission')
   @ApiQuery({
     name: 'page',
     required: false,
@@ -70,6 +69,7 @@ export class PermissionController {
     return new PaginatedDto(permissions, total);
   }
 
+  @CheckPolicies({ action: 'manage', subject: 'all' })
   @Get('/users/:id')
   @ApiOperation({
     summary: 'Get all permission by user',
@@ -84,6 +84,7 @@ export class PermissionController {
     return await this.permissionService.findByUserId(id);
   }
 
+  @CheckPolicies({ action: 'manage', subject: 'all' })
   @Get('/:id')
   @ApiOperation({
     summary: 'Get a permission by id',
@@ -100,6 +101,7 @@ export class PermissionController {
     return await this.permissionService.findOne(id);
   }
 
+  @CheckPolicies({ action: 'manage', subject: 'all' })
   @Public()
   @Post()
   @HttpCode(201)
@@ -114,6 +116,7 @@ export class PermissionController {
     return await this.permissionService.create(data);
   }
 
+  @CheckPolicies({ action: 'manage', subject: 'all' })
   @Delete('/:id')
   @ApiOperation({
     summary: 'Delete a permission',
@@ -127,6 +130,7 @@ export class PermissionController {
     return this.permissionService.delete(id);
   }
 
+  @CheckPolicies({ action: 'manage', subject: 'all' })
   @Patch('/:id')
   @ApiOperation({
     summary: 'Update a permission',
@@ -145,6 +149,7 @@ export class PermissionController {
     return this.permissionService.update(id, data);
   }
 
+  @CheckPolicies({ action: 'manage', subject: 'all' })
   @Post('/:id/roles')
   @HttpCode(201)
   @ApiOperation({
@@ -165,6 +170,7 @@ export class PermissionController {
     return await this.permissionService.addRole(id, data);
   }
 
+  @CheckPolicies({ action: 'manage', subject: 'all' })
   @Delete('/:id/roles')
   @HttpCode(201)
   @ApiOperation({
