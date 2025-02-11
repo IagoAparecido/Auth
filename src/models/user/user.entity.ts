@@ -17,6 +17,9 @@ export class User extends baseEntity<User> {
   @Column()
   password: string;
 
+  @Column({ nullable: true })
+  resetToken: string;
+
   @Column({ default: true })
   isActive: boolean;
 

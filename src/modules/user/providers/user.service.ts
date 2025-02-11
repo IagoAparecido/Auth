@@ -1,6 +1,5 @@
 import { CreateUserRequestDto } from '@modules/user/models/dto/create-user-request.dto';
 import {
-  ConflictException,
   Injectable,
   NotFoundException,
   UnauthorizedException,
@@ -17,9 +16,9 @@ import { UpdateUserRequestDto } from '../models/dto/update-user-request.dto';
 export class UserService {
   constructor(
     @InjectRepository(User)
-    private usersRepository: Repository<User>,
+    private readonly usersRepository: Repository<User>,
     @InjectRepository(Role)
-    private rolesRepository: Repository<Role>,
+    private readonly rolesRepository: Repository<Role>,
   ) {}
 
   findAll(page: number, limit: number): Promise<[User[], number]> {
@@ -44,8 +43,8 @@ export class UserService {
     });
   }
 
-  findOne(username: string, application: USER_TYPE): Promise<User | null> {
-    return this.usersRepository.findOne({
+  async findOne(username: string, application: USER_TYPE): Promise<User> {
+    const user = await this.usersRepository.findOne({
       where: { username: username, application: application },
       select: [
         'id',
@@ -60,6 +59,8 @@ export class UserService {
         'updatedAt',
       ],
     });
+    if (!user) throw new NotFoundException();
+    return user;
   }
 
   async findById(id: string): Promise<User> {
@@ -110,6 +111,34 @@ export class UserService {
       acceptTerms: data.terms,
       role: role,
     });
+  }
+
+  async resetPassword(
+    username: string,
+    application: USER_TYPE,
+    password: string,
+  ) {
+    const user = await this.usersRepository.findOne({
+      where: {
+        username: username,
+        application: application,
+      },
+      select: ['username', 'application', 'id'],
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    const hashedPassword = await bcrypt.hash(password, 10);
+
+    return this.usersRepository.save({
+      password: hashedPassword,
+      resetToken: null!,
+    });
+  }
+
+  async saveToken(id: string, token: string) {
+    return await this.usersRepository.update({ id: id }, { resetToken: token });
   }
 
   async delete(id: string) {

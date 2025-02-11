@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { JwtModule } from '@nestjs/jwt';
+import { JwtModule, JwtService } from '@nestjs/jwt';
 import { AuthService } from './providers/auth.service';
 import { AuthController } from './controllers/auth.controller';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -23,6 +23,7 @@ import { RegisterCode } from '@models/registerCode/register-code.entity';
     }),
     UserModule,
     RmqModule,
+    JwtModule,
   ],
   providers: [
     AuthService,

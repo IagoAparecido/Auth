@@ -1,12 +1,4 @@
-import {
-  Body,
-  Controller,
-  Param,
-  Patch,
-  Post,
-  Request,
-  UseGuards,
-} from '@nestjs/common';
+import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthService } from '../providers/auth.service';
 import { Public } from 'src/shared/decorator/is-public.decorator';
 import { Request as IRequest } from 'express';
@@ -23,8 +15,9 @@ import {
 import { LocalAuthGuard } from '../guards/local-auth.guard';
 import { CreateUserRequestDto } from '../../user/models/dto/create-user-request.dto';
 import { LoginResponseDto } from '../models/dto/login-reponse.dto';
-import { ForgotPasswordRequestDto } from '../models/dto/forgot-password-request.dto';
 import { RegisterCodeRequestDto } from '../models/dto/register-code-request.dto';
+import { ResetPasswordDto } from '@modules/auth/models/dto/reset-password.dto';
+import { ForgotPasswordDto } from '@modules/auth/models/dto/forgot-password.dto';
 
 @Controller('auth')
 export class AuthController {
@@ -54,6 +47,26 @@ export class AuthController {
   @ApiBody({ type: CreateUserRequestDto })
   register(@Body() data: CreateUserRequestDto) {
     return this.authService.register(data);
+  }
+
+  @Public()
+  @Post('reset-password')
+  @ApiOperation({
+    summary: 'reset password',
+  })
+  @ApiBody({ type: ResetPasswordDto })
+  resetPassword(@Body() data: ResetPasswordDto) {
+    return this.authService.resetPassword(data);
+  }
+
+  @Public()
+  @Post('forgot-password')
+  @ApiOperation({
+    summary: 'forgot password',
+  })
+  @ApiBody({ type: ForgotPasswordDto })
+  forgotPassword(@Body() data: ForgotPasswordDto) {
+    return this.authService.forgotPassword(data);
   }
 
   @Post('verify')

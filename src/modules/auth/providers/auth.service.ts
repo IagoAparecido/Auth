@@ -18,6 +18,8 @@ import { RegisterCodeRequestDto } from '../models/dto/register-code-request.dto'
 import { InjectRepository } from '@nestjs/typeorm';
 import { RegisterCode } from '@models/registerCode/register-code.entity';
 import { Repository } from 'typeorm';
+import { ResetPasswordDto } from '@modules/auth/models/dto/reset-password.dto';
+import { ForgotPasswordDto } from '../models/dto/forgot-password.dto';
 
 @Injectable()
 export class AuthService {
@@ -77,6 +79,42 @@ export class AuthService {
         name: user.name,
       })
       .toPromise();
+  }
+
+  async resetPassword(data: ResetPasswordDto) {
+    const dataDecoded = await this.jwtService.decode(data.token);
+
+    const user = await this.usersService.resetPassword(
+      dataDecoded.username,
+      dataDecoded.application,
+      data.password,
+    );
+    if (user.resetToken !== data.token) {
+      throw new ConflictException('Invalid Token');
+    }
+  }
+
+  async forgotPassword(data: ForgotPasswordDto) {
+    const user = await this.usersService.findOne(
+      data.username,
+      data.application,
+    );
+
+    const payload = {
+      id: user.id,
+      name: user.name,
+    };
+    const token = await this.jwtService.signAsync(payload);
+
+    await this.client
+      .send(queueKeys.FORGOT_PASSWORD, {
+        email: user.username,
+        name: user.name,
+        url: `${process.env.FORGOT_PASSWORD_URL}?token=${token}`,
+      })
+      .toPromise();
+
+    await this.usersService.saveToken(user.id, token);
   }
 
   public async verifyCode(data: RegisterCodeRequestDto) {
